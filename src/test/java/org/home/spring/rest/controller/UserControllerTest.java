@@ -3,6 +3,7 @@ package org.home.spring.rest.controller;
 import org.home.spring.rest.configuration.RootConfiguration;
 import org.home.spring.rest.configuration.WebAppInitializer;
 import org.home.spring.rest.configuration.WebConfiguration;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -27,6 +28,12 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 public class UserControllerTest {
     @Inject
     private UserController controller;
+    private MockMvc mockMvc;
+
+    @Before
+    public void setUp() throws Exception {
+        mockMvc = standaloneSetup(controller).build();
+    }
 
     @Test
     public void shouldUserListBeShown() throws Exception {
@@ -39,8 +46,6 @@ public class UserControllerTest {
     }
 
     private void assertThatRestMethodIsReachableByPathAndFirstElementIsCorrect(String path, int expectedUserAmount) throws Exception {
-        MockMvc mockMvc = standaloneSetup(controller).build();
-
         mockMvc.perform(get(path))
                .andExpect(status().isOk())
                .andExpect(content().contentType(APPLICATION_JSON))
@@ -51,4 +56,13 @@ public class UserControllerTest {
                .andExpect(jsonPath("$[0].surname", is("Surname0")));
     }
 
+    @Test
+    public void shouldBadRequestExceptionBeThrownWhenCountValueIsLessThanOne() throws Exception {
+        mockMvc.perform(get("/user/all?count=0")).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldBadRequestExceptionBeThrownWhenCountValueIsLessThanOne2() throws Exception {
+        mockMvc.perform(get("/user/all2?count=0")).andExpect(status().isBadRequest());
+    }
 }
