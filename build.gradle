@@ -1,0 +1,49 @@
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'org.akhikhl.gretty' // jetty 9 with servlet-api 3.0+
+
+group = 'org.home.spring.rest'
+version = '1.0.0'
+
+targetCompatibility = 1.8
+sourceCompatibility = 1.8
+
+repositories {
+    jcenter()
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.springframework:spring-core:$springframeworkVersion"
+    compile "org.springframework:spring-context:$springframeworkVersion"
+    compile "org.springframework:spring-webmvc:$springframeworkVersion"
+
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.1'
+
+    compile 'javax.inject:javax.inject:1'
+    compile 'edu.washington.cs.types.checker:checker-framework:1.7.0'
+
+    compile 'javax.servlet:javax.servlet-api:3.1.0'
+
+    testCompile "org.springframework:spring-test:$springframeworkVersion"
+    testCompile 'junit:junit:4.12'
+    testCompile "com.jayway.jsonpath:json-path:$jsonpathVersion"
+    testCompile "com.jayway.jsonpath:json-path-assert:$jsonpathVersion"
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'org.akhikhl.gretty:gretty:1.2.4'
+    }
+}
+
+gretty {
+    port = 8080
+    contextPath = 'root'
+    servletContainer = 'jetty9'
+}
